@@ -24,7 +24,7 @@
                                     Add to cart
                                 </button>
                             </div>
-                        </div> 
+                        </div>
                     </form>
                 </p>
                 <h2>Reviews</h2>
@@ -39,6 +39,8 @@
                             {{ review.date }}
                         </h6>
                         <p class="card-text">{{ review.comment }}</p>
+                                    <a class="btn btn-danger" href="{% url 'movies.delete_review' id=template_data.movie.id review_id=review.id %}">Report</a>
+                                    <a class="btn btn-primary" href="{% url 'movies.increment_upvote' id=template_data.movie.id review_id=review.id %}"> Upvote </a>
                         {% if user.is_authenticated and user == review.user %}
                         <a class="btn btn-primary"
                             href="{% url 'movies.edit_review' id=template_data.movie.id review_id=review.id %}">
@@ -50,14 +52,14 @@
                         {% endif %}
                     </li>
                 {% endfor %}
-                </ul
+                </ul>
                 {% if user.is_authenticated %}
                 <div class="container mt-4">
                     <div class="row justify-content-center">
                         <div class="col-12">
                             <div class="card shadow p-3 mb-4 rounded">
                                 <div class="card-body">
-                                    <b class="text-start">Create a review </b><br/><br />
+                                    <b class="text-start">Create a Review </b><br/><br />
                                     <form method="POST" action="{% url 'movies.create_review' id=template_data.movie.id %}">
                                         {% csrf_token %}
                                         <p>

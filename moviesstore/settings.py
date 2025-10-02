@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-k8yz7m!tz9i87i$d0%%$i=!rznhx-ot59%h!_hv50&w1s1o=v6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'home',
     'movies',
     'accounts',
-    'cart', 
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -121,6 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

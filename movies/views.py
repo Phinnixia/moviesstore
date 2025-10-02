@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review
+from .models import Movie, Review, Petition
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -21,6 +21,52 @@ def show(request, id):
     template_data['movie'] = movie
     template_data['reviews'] = reviews
     return render(request, 'movies/show.html', {'template_data': template_data})
+
+#UPVOTE
+def comments(request):
+    reviews = Review.objects.all()
+    template_data = {}
+    template_data['reviews'] = reviews.order_by('-upvote')
+    return render(request, 'movies/comments.html', {'template_data': template_data})
+
+def increment_upvote(request, id, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    review.upvote += 1
+    review.save()
+    return redirect('movies.show', id=id)
+
+#PETITIONS
+def petitions(request):
+    petitions = Petition.objects.all()
+    template_data = {}
+    template_data['petitions'] = petitions
+    return render(request, 'movies/petitions.html', {'template_data': template_data})
+
+@login_required
+def create_petition(request):
+    if request.method == 'POST' and request.POST['movieTitle'] != '':
+        petition = Petition()
+        petition.movieTitle = request.POST['movieTitle']
+        petition.description = request.POST['description']
+        petition.save()
+
+        petitions = Petition.objects.all()
+        template_data = {}
+        template_data['petitions'] = petitions
+
+        return render(request, 'movies/petitions.html', {'template_data': template_data})
+    else:
+        return render(request, 'movies/petitions.html', {'template_data': template_data})
+
+def vote(request, id):
+    petition = get_object_or_404(Petition, id=id)
+    petition.votes += 1
+    petition.save()
+
+    petitions = Petition.objects.all()
+    template_data = {}
+    template_data['petitions'] = petitions
+    return render(request, 'movies/petitions.html', {'template_data': template_data})
 
 @login_required
 def create_review(request, id):
