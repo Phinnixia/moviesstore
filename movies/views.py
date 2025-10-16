@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404 
 from .models import Movie, Review, Petition, Rating
 from django.contrib.auth.decorators import login_required
 
@@ -16,13 +16,24 @@ def index(request):
 def show(request, id):
     movie = Movie.objects.get(id=id)
     reviews = Review.objects.filter(movie=movie)
+    ratings = Rating.objects.filter(movie =movie)
+    score = 0
+    total = 0
+    for rating in ratings:
+        score += rating.rating
+        total += 1
+    if total != 0:
+        total = score / total
+    #total = 5
     template_data = {}
     template_data['title'] = movie.name
     template_data['movie'] = movie
     template_data['reviews'] = reviews
+    template_data['ratings'] = ratings
+    template_data['total'] = total
     return render(request, 'movies/show.html', {'template_data': template_data})
 
-#UPVOTE
+#UPVOTE (copy for rating)
 def comments(request):
     reviews = Review.objects.all()
     template_data = {}
