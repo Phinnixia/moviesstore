@@ -14,4 +14,6 @@ urlpatterns = [
     path('petitions/', views.petitions, name='movies.petitions'),
     path('petitions/create/', views.create_petition, name='movies.create_petition'),
     path('<int:id>/vote', views.vote, name='movies.vote'),
+    #RATINGS
+     path('<int:id>/rating/create/', views.create_rating, name='movies.create_rating'),
 ]

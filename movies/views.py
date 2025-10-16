@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Movie, Review, Petition
+from .models import Movie, Review, Petition, Rating
 from django.contrib.auth.decorators import login_required
 
 def index(request):
@@ -41,6 +41,20 @@ def petitions(request):
     template_data = {}
     template_data['petitions'] = petitions
     return render(request, 'movies/petitions.html', {'template_data': template_data})
+
+#RATINGS
+@login_required
+def create_rating(request, id):
+    if request.method == 'POST':
+        movie = Movie.objects.get(id=id)
+        rating = Rating()
+        rating.movie = movie
+        rating.user = request.user
+        rating.rating = request.POST['rating']
+        rating.save()
+        return redirect('movies.show', id=id)
+    else:
+        return redirect('movies.show', id=id)
 
 @login_required
 def create_petition(request):
