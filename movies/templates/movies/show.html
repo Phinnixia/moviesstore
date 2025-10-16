@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 {% block content %}
 {% load static %}
 <div class="p-3">
@@ -9,6 +9,8 @@
                 <hr />
                 <p><b>Description:</b> {{ template_data.movie.description }}</p>
                 <p><b>Price:</b> ${{ template_data.movie.price }}</p>
+                <p><b>Average Rating:</b> {{ template_data.total }} out of 5 stars</p>
+                <!--average rating-->
                 <p class="card-text">
                     <form method="post" action="{% url 'cart.add' id=template_data.movie.id %}">
                         <div class="row">
@@ -27,8 +29,22 @@
                         </div>
                     </form>
                 </p>
+                <h2>Ratings</h2>
+                <hr /> 
+                <!--create all ratings-->
+                <ul class="list-group">
+                    {% for rating in template_data.ratings %}
+                    <li class="list-group-item pb-3 pt-3">
+                        <h5 class="card-title">
+                            {{ rating.user.username }} rated this {{ rating.rating }} stars!
+                        </h5>
+                        
+                    </li>
+                {% endfor %}
+                </ul>
                 <h2>Reviews</h2>
-                <hr />
+                <hr /> 
+                <!--create all ratings-->
                 <ul class="list-group">
                     {% for review in template_data.reviews %}
                     <li class="list-group-item pb-3 pt-3">
