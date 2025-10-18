@@ -4,6 +4,7 @@ from movies.models import Movie
 from .utils import calculate_cart_total
 from .models import Order, Item
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 def index(request):
     cart_total = 0
@@ -38,9 +39,16 @@ def purchase(request):
         return redirect('cart.index')
     movies_in_cart = Movie.objects.filter(id__in=movie_ids)
     cart_total = calculate_cart_total(cart, movies_in_cart)
+
+    if request.method != 'POST':
+        return render(request, 'cart/city_form.html')
+    
+    city = request.POST.get('city')
+
     order = Order()
     order.user = request.user
     order.total = cart_total
+    order.city = city
     order.save()
     for movie in movies_in_cart:
         item = Item()
@@ -54,3 +62,22 @@ def purchase(request):
     template_data['title'] = 'Purchase confirmation'
     template_data['order_id'] = order.id
     return render(request, 'cart/purchase.html', {'template_data': template_data})
+
+def map_view(request):
+    state_movie_stats = (
+        Item.objects
+        .values('order__state', 'movie__name')
+        .annotate(num_purchases=Count('id'))
+        .exclude(order__state__isnull=True)
+        .exclude(order__state__exact='')
+        .order_by('-num_purchases')
+    )
+
+    top_movie_per_state = {}
+    for entry in state_movie_stats:
+        state = entry['order__state']
+        movie = entry['movie__name']
+        if state not in top_movie_per_state:
+            top_movie_per_state[state] = movie
+
+    return render(request, 'home/index.html', {'top_movie_per_state': top_movie_per_state})
