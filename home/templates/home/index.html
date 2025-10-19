@@ -12,6 +12,16 @@
             <div class="col mx-auto text-center mb-3">
                 <h4>Welcome to the best movie store!!</h4>
             </div>
+            {% for state, movie in template_data.map_data.items %}
+            <div>
+                <h4>
+                    {{state}}
+                </h4>
+                <p>
+                    {{movie}}
+                </p>
+            </div>
+            {% endfor %}
         </div>
         <!--BLANK-->
     </div>

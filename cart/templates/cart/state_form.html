@@ -11,8 +11,8 @@
                         <form method="POST">
                             {% csrf_token %}
                             <div>
-                                <label>Please Enter Your State </label>
-                                <input type="text" placeholder="Your state...">
+                                <label>Please Enter Your State: [Template- State/Region, Country] Ex. Virgina, USA</label>
+                                <input name="state" type="text" placeholder="Your state...">
                             </div>
                             <button type="submit"
                                 class="btn bg-dark text-white">Submit
