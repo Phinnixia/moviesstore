@@ -41,14 +41,14 @@ def purchase(request):
     cart_total = calculate_cart_total(cart, movies_in_cart)
 
     if request.method != 'POST':
-        return render(request, 'cart/city_form.html')
+        return render(request, 'cart/state_form.html')
     
-    city = request.POST.get('city')
+    state = request.POST.get('state')
 
     order = Order()
     order.user = request.user
     order.total = cart_total
-    order.city = city
+    order.state = state
     order.save()
     for movie in movies_in_cart:
         item = Item()
