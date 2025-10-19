@@ -1,6 +1,8 @@
+on: [push]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Use secret
-        run: echo "My code: ${{ secrets.GOOGLE_API_KEY }}"
+        run: echo "My code is ${{ secrets.GOOGLE_API_KEY }}"
