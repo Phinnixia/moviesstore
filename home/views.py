@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from cart.models import Item
 from django.db.models import Count
+import moviesstore.settings as settings
 
 # Create your views here.
 def index(request):
     template_data = {}
     template_data['title'] = 'Movies Store'
+    template_data["GOOGLE_API_KEY"] = settings.GOOGLE_API_KEY
     state_movie_stats = (
         Item.objects
         .values('order__state', 'movie__name')

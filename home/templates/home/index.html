@@ -1,5 +1,49 @@
 {% extends 'base.html' %}
 {% block content %}
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{template_data.GOOGLE_API_KEY}}&loading=async&callback=initMap">
+</script>
+
+<script>
+    async function initMap() {
+        const { Map } = await google.maps.importLibrary("maps");
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+        const map = new Map(document.getElementById("map"), {
+            center: { lat: 38.5501, lng: -95.782 },
+            zoom: 5,
+            MapId: "2340Map",
+        });
+
+        const infoWindow = new google.maps.InfoWindow();
+        var geocoder = new google.maps.Geocoder();
+        var regions = {{ template_data.map_data|safe }};
+
+        for (let region in regions) {
+            geocoder.geocode({ 'address': region }, function(results, status) {
+                if (status == 'OK') {
+                    const marker = new AdvancedMarkerElement({
+                        map,
+                        position: results[0].geometry.location,
+                        title: region,
+                        gmpClickable: true,
+                    });
+
+                    marker.addListener('click', ({ domEvent, latLng }) => {
+                        const { target } = domEvent;
+                        infoWindow.close();
+                        infoWindow.setContent("The most popular movie in " + marker.title + " is " + regions[region] + "!");
+                        infoWindow.open(marker.map, marker);
+                    });
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+    }
+    initMap();
+</script>
+
 <header class="masthead bg-index text-white text-center py-4">
     <div class="container d-flex align-items-center flex-column pt-2">
         <h2>Movies Store</h2>
@@ -11,19 +55,10 @@
         <div class="row mt-3">
             <div class="col mx-auto text-center mb-3">
                 <h4>Welcome to the best movie store!!</h4>
+                <h2>Map of Most Popular Movies in Different Regions</h2>
+                <div id="map" style="height: 90vh; width: 100%;"></div>
             </div>
-            {% for state, movie in template_data.map_data.items %}
-            <div>
-                <h4>
-                    {{state}}
-                </h4>
-                <p>
-                    {{movie}}
-                </p>
-            </div>
-            {% endfor %}
         </div>
-        <!--BLANK-->
     </div>
 </div>
 {% endblock content %}
